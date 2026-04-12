@@ -2,7 +2,7 @@ const express = require("express");
 const fetch = require("node-fetch");
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -17,12 +17,15 @@ app.post("/proxy", async (req, res) => {
     const apiKey = process.env.GEMINI_API_KEY;
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-    // Extraer el prompt del formato Anthropic que manda el frontend
     const userMessage = req.body.messages?.[0]?.content || "";
 
     const geminiBody = {
       contents: [{ parts: [{ text: userMessage }] }],
-      generationConfig: { maxOutputTokens: 4096, temperature: 0.7 }
+      generationConfig: {
+        maxOutputTokens: 4096,
+        temperature: 0.7,
+        responseMimeType: "application/json"
+      }
     };
 
     const response = await fetch(url, {
@@ -32,13 +35,20 @@ app.post("/proxy", async (req, res) => {
     });
 
     const data = await response.json();
+    console.log("Gemini raw response:", JSON.stringify(data).substring(0, 500));
 
-    // Convertir respuesta de Gemini al formato que espera el frontend
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+    if (!text) {
+      console.error("Empty response from Gemini:", JSON.stringify(data));
+      return res.status(500).json({ content: [{ type: "text", text: JSON.stringify(data) }] });
+    }
+
     res.json({ content: [{ type: "text", text }] });
 
   } catch (err) {
-    res.status(500).json({ error: "Error al conectar con la API" });
+    console.error("Proxy error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 
