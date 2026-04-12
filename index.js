@@ -14,17 +14,29 @@ app.use((req, res, next) => {
 
 app.post("/proxy", async (req, res) => {
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const apiKey = process.env.GEMINI_API_KEY;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+    // Extraer el prompt del formato Anthropic que manda el frontend
+    const userMessage = req.body.messages?.[0]?.content || "";
+
+    const geminiBody = {
+      contents: [{ parts: [{ text: userMessage }] }],
+      generationConfig: { maxOutputTokens: 4096, temperature: 0.7 }
+    };
+
+    const response = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01"
-      },
-      body: JSON.stringify(req.body)
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(geminiBody)
     });
+
     const data = await response.json();
-    res.status(response.status).json(data);
+
+    // Convertir respuesta de Gemini al formato que espera el frontend
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    res.json({ content: [{ type: "text", text }] });
+
   } catch (err) {
     res.status(500).json({ error: "Error al conectar con la API" });
   }
