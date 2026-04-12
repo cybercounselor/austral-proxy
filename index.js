@@ -15,7 +15,9 @@ app.use((req, res, next) => {
 app.post("/proxy", async (req, res) => {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
-    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    
+    // Use v1beta with gemini-2.0-flash for maximum compatibility and avoid 404
+    const url = `https://googleapis.com{apiKey}`;
 
     const userMessage = req.body.messages?.[0]?.content || "";
 
