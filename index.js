@@ -23,8 +23,7 @@ app.post("/proxy", async (req, res) => {
       contents: [{ parts: [{ text: userMessage }] }],
       generationConfig: {
         maxOutputTokens: 4096,
-        temperature: 0.7,
-        responseMimeType: "application/json"
+        temperature: 0.7
       }
     };
 
