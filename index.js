@@ -15,7 +15,7 @@ app.use((req, res, next) => {
 app.post("/proxy", async (req, res) => {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const userMessage = req.body.messages?.[0]?.content || "";
 
@@ -23,7 +23,8 @@ app.post("/proxy", async (req, res) => {
       contents: [{ parts: [{ text: userMessage }] }],
       generationConfig: {
         maxOutputTokens: 4096,
-        temperature: 0.7
+        temperature: 0.7,
+        responseMimeType: "application/json"
       }
     };
 
