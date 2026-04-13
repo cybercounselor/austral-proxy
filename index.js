@@ -44,13 +44,14 @@ EJERCICIOS DISPONIBLES:
 ${LIBRARY}
 
 REGLAS:
-1. SIEMPRE incluir 1 ejercicio de Qigong/Kung Fu por día (variarlo entre días).
+1. SIEMPRE incluir 1 ejercicio de Qigong/Kung Fu por rutina.
 2. Calibrar nivel real según evaluación inicial.
 3. Asignar tags según condiciones del atleta. Qigong siempre lleva tag "Chi/Energía".
 4. RPE: principiante 5-6, intermedio 6-8, avanzado 7-9.
 5. Descansos: fuerza 90-180s, resistencia 30-60s, hipertrofia 60-90s.
-6. Máximo 8 ejercicios por día.
+6. Máximo 10 ejercicios por día.
 7. Responder SOLO con JSON válido sin markdown ni texto extra.
+8. La sesión completa debe durar aproximadamente 45 minutos. Calculá series, reps y descansos en consecuencia.
 
 Formato JSON requerido:
 {"athlete":"","level":"","program_name":"","days":[{"day":"","focus":"","exercises":[{"name":"","sets":3,"reps":"","rpe":7,"rest_seconds":90,"tags":[],"notes":""}]}],"general_notes":""}`;
