@@ -11,15 +11,14 @@ app.use((req, res, next) => {
   if (req.method === "OPTIONS") return res.sendStatus(200);
   next();
 });
-//////DESDE ACA
+
 app.post("/proxy", async (req, res) => {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
-    // URL corregida sin caracteres raros y con el modelo más estable
-    const url = `https://googleapis.com{apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const userMessage = req.body.messages?.[0]?.content || "";
-/// HASTA ACA
+
     const geminiBody = {
       contents: [{ parts: [{ text: userMessage }] }],
       generationConfig: {
